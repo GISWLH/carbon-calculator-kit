@@ -1,0 +1,19 @@
+{
+  "name": "carbon-calculator",
+  "version": "1.0.0",
+  "private": true,
+  "description": "企业碳排放工具箱，Shoppu 风格单页 HTML 演示。",
+  "scripts": {
+    "start": "python -m http.server 5173 --bind 127.0.0.1",
+    "serve": "python -m http.server 5173 --bind 127.0.0.1"
+  },
+  "keywords": [
+    "carbon",
+    "emission",
+    "scope-1",
+    "scope-2",
+    "ems",
+    "html"
+  ],
+  "license": "UNLICENSED"
+}

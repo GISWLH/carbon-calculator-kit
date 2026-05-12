@@ -1,0 +1,936 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>企业碳排放工具箱 | Shoppu Style Demo</title>
+  <link rel="icon" type="image/png" href="docs/images/project-icon.png" />
+  <style>
+    :root {
+      --cream: #fff3d8;
+      --paper: #fffaf0;
+      --ink: #111111;
+      --red: #ef3d2f;
+      --green: #2f8f5b;
+      --blue: #2867b2;
+      --yellow: #ffd447;
+      --line: 3px solid var(--ink);
+      --shadow: 7px 7px 0 var(--ink);
+      --radius: 8px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 12px 12px, rgba(17, 17, 17, .08) 2px, transparent 2px) 0 0 / 32px 32px,
+        linear-gradient(180deg, #fff8e8 0%, var(--cream) 48%, #f7e2ba 100%);
+      font-family: "Trebuchet MS", "Microsoft YaHei", sans-serif;
+      letter-spacing: 0;
+    }
+
+    button, input, select { font: inherit; }
+
+    section { scroll-margin-top: 96px; }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 14px;
+      align-items: center;
+      padding: 12px 18px;
+      border-bottom: var(--line);
+      background: var(--paper);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 900;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .stamp {
+      display: grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      border: var(--line);
+      background: var(--red);
+      color: var(--paper);
+      box-shadow: 4px 4px 0 var(--ink);
+      transform: rotate(-5deg);
+      font-weight: 900;
+    }
+
+    .nav {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      min-width: 0;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .nav a, .ghost-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-height: 34px;
+      padding: 6px 12px;
+      border: 2px solid var(--ink);
+      border-radius: 999px;
+      color: var(--ink);
+      background: #fff;
+      text-decoration: none;
+      font-weight: 800;
+      white-space: nowrap;
+      box-shadow: 3px 3px 0 var(--ink);
+    }
+
+    .ghost-button {
+      cursor: pointer;
+      background: var(--yellow);
+    }
+
+    .marquee {
+      overflow: hidden;
+      border-bottom: var(--line);
+      background: var(--red);
+      color: var(--paper);
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .marquee span {
+      display: inline-block;
+      padding: 10px 0;
+      animation: slide 24s linear infinite;
+    }
+
+    @keyframes slide {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    .wrap {
+      width: min(1180px, calc(100% - 28px));
+      margin: 0 auto;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(320px, .95fr);
+      gap: 22px;
+      align-items: stretch;
+      padding: 34px 0 26px;
+    }
+
+    .hero-copy {
+      position: relative;
+      padding: 24px;
+      border: var(--line);
+      border-radius: var(--radius);
+      background: var(--paper);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .hero-copy::after {
+      content: "DEMO";
+      position: absolute;
+      right: -26px;
+      bottom: 18px;
+      padding: 7px 48px;
+      border: var(--line);
+      background: var(--yellow);
+      font-weight: 900;
+      transform: rotate(-13deg);
+    }
+
+    .eyebrow {
+      display: inline-block;
+      margin-bottom: 12px;
+      padding: 5px 10px;
+      border: 2px solid var(--ink);
+      background: #bfe7c8;
+      font-weight: 900;
+    }
+
+    h1 {
+      margin: 0;
+      max-width: 10em;
+      font-family: Georgia, "SimSun", serif;
+      font-size: clamp(42px, 7vw, 82px);
+      line-height: .95;
+      letter-spacing: 0;
+    }
+
+    .hero-copy p {
+      max-width: 620px;
+      margin: 18px 0 0;
+      font-size: 18px;
+      line-height: 1.7;
+      font-weight: 700;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 22px;
+    }
+
+    .primary-button {
+      min-height: 44px;
+      padding: 10px 16px;
+      border: var(--line);
+      border-radius: var(--radius);
+      background: var(--ink);
+      color: var(--paper);
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 4px 4px 0 var(--red);
+    }
+
+    .hero-visual {
+      min-height: 430px;
+      border: var(--line);
+      border-radius: var(--radius);
+      background: #fce0b0;
+      box-shadow: var(--shadow);
+      padding: 18px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .factory {
+      height: 100%;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 16px;
+    }
+
+    .factory-sky {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .cloud, .sun, .meter-mini {
+      border: 2px solid var(--ink);
+      background: var(--paper);
+      min-height: 66px;
+      padding: 10px;
+      font-weight: 900;
+      box-shadow: 4px 4px 0 var(--ink);
+    }
+
+    .sun {
+      background: var(--yellow);
+      border-radius: 50%;
+      aspect-ratio: 1;
+      min-height: 76px;
+      justify-self: center;
+      display: grid;
+      place-items: center;
+    }
+
+    .factory-body {
+      position: relative;
+      border: var(--line);
+      background:
+        linear-gradient(90deg, rgba(17,17,17,.1) 1px, transparent 1px) 0 0 / 26px 100%,
+        #d7ead9;
+      overflow: hidden;
+    }
+
+    .chimney {
+      position: absolute;
+      left: 10%;
+      bottom: 0;
+      width: 58px;
+      height: 70%;
+      border-right: var(--line);
+      border-left: var(--line);
+      border-top: var(--line);
+      background: #f2a65a;
+    }
+
+    .roof {
+      position: absolute;
+      left: 28%;
+      bottom: 45%;
+      width: 58%;
+      height: 28%;
+      border: var(--line);
+      background: var(--red);
+      transform: skewY(-9deg);
+    }
+
+    .plant {
+      position: absolute;
+      left: 22%;
+      right: 8%;
+      bottom: 0;
+      height: 48%;
+      border-top: var(--line);
+      border-left: var(--line);
+      background: var(--paper);
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+      padding: 16px;
+    }
+
+    .window {
+      border: 2px solid var(--ink);
+      background: var(--blue);
+      min-height: 34px;
+    }
+
+    .smoke {
+      position: absolute;
+      left: 6%;
+      top: 10%;
+      display: flex;
+      gap: 7px;
+    }
+
+    .smoke i {
+      width: 26px;
+      height: 26px;
+      border: 2px solid var(--ink);
+      border-radius: 50%;
+      background: #fff;
+      animation: puff 2.8s ease-in-out infinite;
+    }
+
+    .smoke i:nth-child(2) { animation-delay: .4s; }
+    .smoke i:nth-child(3) { animation-delay: .8s; }
+
+    @keyframes puff {
+      0%, 100% { transform: translateY(0); opacity: .65; }
+      50% { transform: translateY(-12px); opacity: 1; }
+    }
+
+    .price-tag {
+      align-self: end;
+      width: max-content;
+      padding: 12px 16px;
+      border: var(--line);
+      background: var(--red);
+      color: #fff;
+      font-size: 28px;
+      font-weight: 900;
+      box-shadow: 5px 5px 0 var(--ink);
+      transform: rotate(2deg);
+    }
+
+    .kpis, .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .kpi, .tool-card, .panel, .mini-report {
+      border: var(--line);
+      border-radius: var(--radius);
+      background: var(--paper);
+      box-shadow: 5px 5px 0 var(--ink);
+    }
+
+    .kpi {
+      padding: 14px;
+      min-height: 118px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .kpi small, .tool-card small, .panel small {
+      font-weight: 900;
+      color: #565047;
+      text-transform: uppercase;
+    }
+
+    .kpi b {
+      font-family: Georgia, "SimSun", serif;
+      font-size: 31px;
+      line-height: 1;
+    }
+
+    .kpi:nth-child(2) { background: #dbeafe; }
+    .kpi:nth-child(3) { background: #dcfce7; }
+    .kpi:nth-child(4) { background: #fee2e2; }
+
+    section { padding: 26px 0; }
+
+    .section-title {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 16px;
+      border-bottom: var(--line);
+    }
+
+    .section-title h2 {
+      margin: 0 0 9px;
+      font-family: Georgia, "SimSun", serif;
+      font-size: clamp(30px, 5vw, 54px);
+      letter-spacing: 0;
+    }
+
+    .section-title span {
+      margin-bottom: 12px;
+      font-weight: 900;
+    }
+
+    .tool-card {
+      position: relative;
+      min-height: 178px;
+      padding: 16px;
+      overflow: hidden;
+    }
+
+    .tool-card::before {
+      content: attr(data-index);
+      position: absolute;
+      right: 12px;
+      top: 10px;
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border: 2px solid var(--ink);
+      border-radius: 50%;
+      background: var(--yellow);
+      font-weight: 900;
+    }
+
+    .tool-card h3 {
+      margin: 22px 0 8px;
+      max-width: 9em;
+      font-size: 22px;
+      line-height: 1.15;
+    }
+
+    .tool-card p {
+      margin: 0;
+      line-height: 1.6;
+      font-weight: 700;
+    }
+
+    .tool-card:nth-child(2n) { background: #eef6ff; }
+    .tool-card:nth-child(3n) { background: #edffd9; }
+    .tool-card:nth-child(5n) { background: #ffe0d6; }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: minmax(320px, .92fr) minmax(0, 1.08fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .panel {
+      padding: 16px;
+    }
+
+    .panel h3 {
+      margin: 0 0 14px;
+      font-size: 24px;
+    }
+
+    .form-grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    label {
+      display: grid;
+      gap: 6px;
+      font-weight: 900;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 11px 12px;
+      border: 2px solid var(--ink);
+      border-radius: 6px;
+      background: #fff;
+      color: var(--ink);
+      outline: none;
+      box-shadow: inset 3px 3px 0 rgba(17,17,17,.08);
+    }
+
+    input:focus, select:focus {
+      border-color: var(--red);
+    }
+
+    .segmented {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .segmented button {
+      min-height: 38px;
+      border: 2px solid var(--ink);
+      border-radius: 6px;
+      background: #fff;
+      cursor: pointer;
+      font-weight: 900;
+    }
+
+    .segmented button.active {
+      background: var(--yellow);
+      box-shadow: 3px 3px 0 var(--ink);
+    }
+
+    .charts {
+      display: grid;
+      gap: 16px;
+    }
+
+    .bars {
+      display: grid;
+      gap: 10px;
+    }
+
+    .bar-row {
+      display: grid;
+      grid-template-columns: 92px 1fr 86px;
+      gap: 10px;
+      align-items: center;
+      font-weight: 900;
+    }
+
+    .bar-track {
+      height: 26px;
+      border: 2px solid var(--ink);
+      background: #fff;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      width: 20%;
+      background: var(--red);
+      transition: width .35s ease;
+    }
+
+    .bar-row:nth-child(2) .bar-fill { background: var(--blue); }
+    .bar-row:nth-child(3) .bar-fill { background: var(--green); }
+    .bar-row:nth-child(4) .bar-fill { background: var(--yellow); }
+
+    .donut-wrap {
+      display: grid;
+      grid-template-columns: 170px 1fr;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .donut {
+      width: 160px;
+      aspect-ratio: 1;
+      border: var(--line);
+      border-radius: 50%;
+      background: conic-gradient(var(--red) 0 40%, var(--blue) 40% 82%, var(--green) 82% 100%);
+      box-shadow: 5px 5px 0 var(--ink);
+      position: relative;
+    }
+
+    .donut::after {
+      content: "";
+      position: absolute;
+      inset: 36px;
+      border: var(--line);
+      border-radius: 50%;
+      background: var(--paper);
+    }
+
+    .legend {
+      display: grid;
+      gap: 9px;
+      font-weight: 900;
+    }
+
+    .legend i {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border: 2px solid var(--ink);
+      margin-right: 8px;
+      vertical-align: -2px;
+    }
+
+    .report-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-top: 16px;
+    }
+
+    .mini-report {
+      padding: 14px;
+      min-height: 130px;
+      font-weight: 800;
+      line-height: 1.55;
+    }
+
+    .mini-report b {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 19px;
+    }
+
+    .code-note {
+      padding: 20px;
+      border: var(--line);
+      border-radius: var(--radius);
+      background: #111;
+      color: #fff8e8;
+      box-shadow: var(--shadow);
+      overflow-x: auto;
+      line-height: 1.6;
+    }
+
+    pre {
+      margin: 0;
+      white-space: pre-wrap;
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 13px;
+    }
+
+    footer {
+      margin-top: 26px;
+      border-top: var(--line);
+      background: var(--ink);
+      color: var(--paper);
+      padding: 24px 0;
+      font-weight: 900;
+    }
+
+    @media (max-width: 900px) {
+      .topbar { grid-template-columns: 1fr; }
+      .nav { justify-content: flex-start; }
+      .hero, .workspace, .donut-wrap { grid-template-columns: 1fr; }
+      .hero-visual { min-height: 360px; }
+      .kpis, .tools-grid, .report-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 560px) {
+      .wrap { width: min(100% - 18px, 1180px); }
+      .kpis, .tools-grid, .report-grid { grid-template-columns: 1fr; }
+      .bar-row { grid-template-columns: 74px 1fr; }
+      .bar-row strong { grid-column: 2; }
+      .segmented { grid-template-columns: 1fr; }
+      .hero-copy, .panel, .tool-card { padding: 14px; }
+      h1 { font-size: 40px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><span class="stamp">CO2</span> Carbon Shoppu</div>
+    <nav class="nav" aria-label="工具导航">
+      <a href="#tools">工具货架</a>
+      <a href="#calculator">碳核算</a>
+      <a href="#report">报告生成</a>
+      <a href="#code">构建代码</a>
+    </nav>
+    <button class="ghost-button" type="button" id="sampleBtn">装入样例</button>
+  </header>
+
+  <div class="marquee">
+    <span>ENERGY CARBON TOOLBOX / SCOPE 1 / SCOPE 2 / GREEN POWER / TARGET TRACKING / EMS READY / ENERGY CARBON TOOLBOX / SCOPE 1 / SCOPE 2 / GREEN POWER / TARGET TRACKING / EMS READY / </span>
+  </div>
+
+  <main class="wrap">
+    <section class="hero">
+      <div class="hero-copy">
+        <span class="eyebrow">企業カーボン小工具 / 9800 起步演示版</span>
+        <h1>企业碳排放工具箱</h1>
+        <p>把企业每月的电、气、油、绿电、产值放进来，立即看到排放总量、范围拆分、碳强度、目标缺口和减排建议。它不是完整 EMS，而是给客户第一眼看懂“能碳管理能落地”的演示入口。</p>
+        <div class="hero-actions">
+          <button class="primary-button" type="button" onclick="document.querySelector('#calculator').scrollIntoView({behavior:'smooth'})">开始核算</button>
+          <button class="ghost-button" type="button" onclick="document.querySelector('#tools').scrollIntoView({behavior:'smooth'})">查看工具箱</button>
+        </div>
+      </div>
+
+      <div class="hero-visual" aria-label="企业能源与碳排放视觉图">
+        <div class="factory">
+          <div class="factory-sky">
+            <div class="cloud">Scope 1<br><small>燃气 / 柴油</small></div>
+            <div class="sun">GREEN</div>
+            <div class="meter-mini">Scope 2<br><small>外购电力</small></div>
+          </div>
+          <div class="factory-body">
+            <div class="smoke"><i></i><i></i><i></i></div>
+            <div class="chimney"></div>
+            <div class="roof"></div>
+            <div class="plant">
+              <div class="window"></div><div class="window"></div><div class="window"></div><div class="window"></div><div class="window"></div>
+              <div class="window"></div><div class="window"></div><div class="window"></div><div class="window"></div><div class="window"></div>
+            </div>
+          </div>
+          <div class="price-tag">¥9800 / Quick Start</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="kpis" aria-label="核心指标">
+      <div class="kpi"><small>本月排放</small><b id="kpiTotal">0.00</b><span>tCO2e</span></div>
+      <div class="kpi"><small>碳强度</small><b id="kpiIntensity">0.00</b><span>tCO2e / 万元</span></div>
+      <div class="kpi"><small>绿电抵扣</small><b id="kpiGreen">0.00</b><span>tCO2e</span></div>
+      <div class="kpi"><small>年度目标进度</small><b id="kpiTarget">0%</b><span>低于目标越安全</span></div>
+    </section>
+
+    <section id="tools">
+      <div class="section-title">
+        <h2>工具货架</h2>
+        <span>Like a tiny carbon shop</span>
+      </div>
+      <div class="tools-grid">
+        <article class="tool-card" data-index="01"><small>Calculator</small><h3>企业月度碳核算</h3><p>按电、气、柴油自动拆分 Scope 1 / Scope 2，并生成总排放。</p></article>
+        <article class="tool-card" data-index="02"><small>Factor</small><h3>排放因子库</h3><p>演示版内置常见能源系数，正式项目可替换为国标、行业或地方因子。</p></article>
+        <article class="tool-card" data-index="03"><small>Target</small><h3>双碳目标看板</h3><p>输入年度目标，自动计算目标使用率和预警状态。</p></article>
+        <article class="tool-card" data-index="04"><small>Report</small><h3>合规报告摘要</h3><p>把核算结果转换成可复制的报表文案，方便做日报、月报、申报底稿。</p></article>
+        <article class="tool-card" data-index="05"><small>Green</small><h3>绿电抵扣测算</h3><p>通过绿电比例估算外购电排放下降空间，辅助绿电采购决策。</p></article>
+        <article class="tool-card" data-index="06"><small>Action</small><h3>减排动作清单</h3><p>根据排放结构推荐空压机、照明、光伏、绿电、设备运维等动作。</p></article>
+        <article class="tool-card" data-index="07"><small>Ledger</small><h3>碳台账字段</h3><p>沉淀月份、能源品类、用量、因子、排放量、凭证来源等关键字段。</p></article>
+        <article class="tool-card" data-index="08"><small>EMS</small><h3>延凡 EMS 对接</h3><p>演示工具适合售前讲清价值，正式落地交给 EMS 做采集、存证和报表。</p></article>
+      </div>
+    </section>
+
+    <section id="calculator">
+      <div class="section-title">
+        <h2>碳核算工作台</h2>
+        <span>Input / Calculate / Report</span>
+      </div>
+
+      <div class="workspace">
+        <aside class="panel">
+          <h3>企业样本</h3>
+          <div class="form-grid">
+            <label>企业类型
+              <select id="industry">
+                <option value="factory">制造工厂</option>
+                <option value="park">产业园区</option>
+                <option value="building">商业楼宇</option>
+              </select>
+            </label>
+            <label>月用电量（kWh）
+              <input id="electricity" type="number" min="0" value="86000" />
+            </label>
+            <label>天然气（m3）
+              <input id="gas" type="number" min="0" value="7200" />
+            </label>
+            <label>柴油（L）
+              <input id="diesel" type="number" min="0" value="1200" />
+            </label>
+            <label>绿电比例（%）
+              <input id="greenRate" type="number" min="0" max="100" value="18" />
+            </label>
+            <label>月产值（万元）
+              <input id="revenue" type="number" min="1" value="460" />
+            </label>
+            <label>年度碳排目标（tCO2e）
+              <input id="target" type="number" min="1" value="980" />
+            </label>
+            <div class="segmented" role="group" aria-label="核算口径">
+              <button type="button" class="active" data-mode="month">月度</button>
+              <button type="button" data-mode="quarter">季度</button>
+              <button type="button" data-mode="year">年度</button>
+            </div>
+          </div>
+        </aside>
+
+        <div class="charts">
+          <div class="panel">
+            <h3>排放结构</h3>
+            <div class="donut-wrap">
+              <div class="donut" id="donut"></div>
+              <div class="legend">
+                <span><i style="background:#ef3d2f"></i>Scope 1 直接排放：<b id="scope1Text">0.00</b> tCO2e</span>
+                <span><i style="background:#2867b2"></i>Scope 2 外购电力：<b id="scope2Text">0.00</b> tCO2e</span>
+                <span><i style="background:#2f8f5b"></i>绿电抵扣：<b id="greenText">0.00</b> tCO2e</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <h3>能源明细</h3>
+            <div class="bars">
+              <div class="bar-row"><span>电力</span><div class="bar-track"><div class="bar-fill" id="barElectricity"></div></div><strong id="electricityText">0.00</strong></div>
+              <div class="bar-row"><span>天然气</span><div class="bar-track"><div class="bar-fill" id="barGas"></div></div><strong id="gasText">0.00</strong></div>
+              <div class="bar-row"><span>柴油</span><div class="bar-track"><div class="bar-fill" id="barDiesel"></div></div><strong id="dieselText">0.00</strong></div>
+              <div class="bar-row"><span>目标</span><div class="bar-track"><div class="bar-fill" id="barTarget"></div></div><strong id="targetText">0%</strong></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="report">
+      <div class="section-title">
+        <h2>一键报告</h2>
+        <span>Copy-ready soft report</span>
+      </div>
+      <div class="report-grid">
+        <div class="mini-report"><b>核算结论</b><span id="reportSummary"></span></div>
+        <div class="mini-report"><b>风险提示</b><span id="reportRisk"></span></div>
+        <div class="mini-report"><b>减排建议</b><span id="reportAction"></span></div>
+      </div>
+    </section>
+
+    <section id="code">
+      <div class="section-title">
+        <h2>构建方式</h2>
+        <span>HTML + CSS + JS</span>
+      </div>
+      <div class="code-note">
+<pre>核心逻辑：用能源活动数据 × 排放因子得到排放量，再按 Scope 1、Scope 2 拆分。
+
+const factors = {
+  electricity: 0.0005703, // tCO2e/kWh，演示系数，正式项目替换为适用因子
+  gas: 0.002162,          // tCO2e/m3
+  diesel: 0.00263         // tCO2e/L
+};
+
+const scope1 = gas * factors.gas + diesel * factors.diesel;
+const grossScope2 = electricity * factors.electricity;
+const greenOffset = grossScope2 * greenRate;
+const scope2 = Math.max(grossScope2 - greenOffset, 0);
+const total = scope1 + scope2;
+const intensity = total / revenue;</pre>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">企业碳排放工具箱 Demo / 适合售前演示、培训开场、公众号图文嵌入。正式落地建议接入延凡 EMS 完成采集、存证、核查与报表闭环。</div>
+  </footer>
+
+  <script>
+    const factors = {
+      electricity: 0.0005703,
+      gas: 0.002162,
+      diesel: 0.00263
+    };
+
+    const ids = [
+      "industry", "electricity", "gas", "diesel", "greenRate", "revenue", "target"
+    ];
+
+    let modeMultiplier = 1;
+
+    function value(id) {
+      return Number(document.getElementById(id).value || 0);
+    }
+
+    function money(n) {
+      return Number.isFinite(n) ? n.toFixed(2) : "0.00";
+    }
+
+    function calculate() {
+      const electricity = value("electricity") * modeMultiplier;
+      const gas = value("gas") * modeMultiplier;
+      const diesel = value("diesel") * modeMultiplier;
+      const greenRate = Math.min(Math.max(value("greenRate"), 0), 100) / 100;
+      const revenue = Math.max(value("revenue") * modeMultiplier, 1);
+      const target = Math.max(value("target"), 1);
+
+      const electricityEmissionGross = electricity * factors.electricity;
+      const greenOffset = electricityEmissionGross * greenRate;
+      const electricityEmission = Math.max(electricityEmissionGross - greenOffset, 0);
+      const gasEmission = gas * factors.gas;
+      const dieselEmission = diesel * factors.diesel;
+      const scope1 = gasEmission + dieselEmission;
+      const scope2 = electricityEmission;
+      const total = scope1 + scope2;
+      const intensity = total / revenue;
+      const targetProgress = Math.min(total / (target / 12 * modeMultiplier), 1.4);
+
+      document.getElementById("kpiTotal").textContent = money(total);
+      document.getElementById("kpiIntensity").textContent = money(intensity);
+      document.getElementById("kpiGreen").textContent = money(greenOffset);
+      document.getElementById("kpiTarget").textContent = Math.round(targetProgress * 100) + "%";
+
+      document.getElementById("scope1Text").textContent = money(scope1);
+      document.getElementById("scope2Text").textContent = money(scope2);
+      document.getElementById("greenText").textContent = money(greenOffset);
+
+      const max = Math.max(electricityEmissionGross, gasEmission, dieselEmission, target / 12 * modeMultiplier, 1);
+      setBar("barElectricity", electricityEmissionGross / max);
+      setBar("barGas", gasEmission / max);
+      setBar("barDiesel", dieselEmission / max);
+      setBar("barTarget", targetProgress / 1.4);
+
+      document.getElementById("electricityText").textContent = money(electricityEmissionGross);
+      document.getElementById("gasText").textContent = money(gasEmission);
+      document.getElementById("dieselText").textContent = money(dieselEmission);
+      document.getElementById("targetText").textContent = Math.round(targetProgress * 100) + "%";
+
+      const s1 = total === 0 ? 0 : scope1 / total * 100;
+      const s2 = total === 0 ? 0 : scope2 / total * 100;
+      document.getElementById("donut").style.background =
+        `conic-gradient(var(--red) 0 ${s1}%, var(--blue) ${s1}% ${s1 + s2}%, var(--green) ${s1 + s2}% 100%)`;
+
+      updateReport(total, intensity, targetProgress, greenRate, electricityEmissionGross, scope1, scope2);
+    }
+
+    function setBar(id, ratio) {
+      document.getElementById(id).style.width = `${Math.max(4, Math.min(ratio * 100, 100))}%`;
+    }
+
+    function updateReport(total, intensity, targetProgress, greenRate, electricityGross, scope1, scope2) {
+      const industry = document.getElementById("industry").selectedOptions[0].textContent;
+      const mainSource = scope2 >= scope1 ? "外购电力" : "燃气与柴油";
+      const risk = targetProgress > 1
+        ? "当前排放已超过本周期目标线，建议立即启动重点设备诊断和绿电采购评估。"
+        : "当前排放仍在目标线内，可继续跟踪峰谷用电、设备空载和非生产时段能耗。";
+      const action = greenRate < .3 && electricityGross > scope1
+        ? "优先提升绿电比例，同时检查空压机、冷站、照明系统的低效运行。"
+        : "继续优化高耗能设备运行策略，并把月度台账沉淀为年度核查凭证。";
+
+      document.getElementById("reportSummary").textContent =
+        `${industry}本周期排放约 ${money(total)} tCO2e，碳强度 ${money(intensity)} tCO2e/万元，主要来源为${mainSource}。`;
+      document.getElementById("reportRisk").textContent = risk;
+      document.getElementById("reportAction").textContent = action;
+    }
+
+    ids.forEach(id => document.getElementById(id).addEventListener("input", calculate));
+    ids.forEach(id => document.getElementById(id).addEventListener("change", calculate));
+
+    document.querySelectorAll(".segmented button").forEach(button => {
+      button.addEventListener("click", () => {
+        document.querySelectorAll(".segmented button").forEach(item => item.classList.remove("active"));
+        button.classList.add("active");
+        modeMultiplier = button.dataset.mode === "quarter" ? 3 : button.dataset.mode === "year" ? 12 : 1;
+        calculate();
+      });
+    });
+
+    document.getElementById("sampleBtn").addEventListener("click", () => {
+      document.getElementById("industry").value = "factory";
+      document.getElementById("electricity").value = 126000;
+      document.getElementById("gas").value = 9300;
+      document.getElementById("diesel").value = 1600;
+      document.getElementById("greenRate").value = 26;
+      document.getElementById("revenue").value = 680;
+      document.getElementById("target").value = 1280;
+      calculate();
+    });
+
+    calculate();
+  </script>
+</body>
+</html>
