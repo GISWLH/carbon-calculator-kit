@@ -1,3 +1,7 @@
+<!-- readme-visual-refresh:banner -->
+![carbon-calculator-kit — hand-drawn project banner](assets/readme/banner.svg)
+<!-- /readme-visual-refresh:banner -->
+
 # Carbon Calculator Kit
 
 <p align="center">
@@ -147,3 +151,7 @@ Scope 1 = 天然气 * 天然气因子 + 柴油 * 柴油因子
 这是一个演示型碳核算工具，不应直接作为政府申报、第三方核查或正式碳盘查报告的唯一依据。正式落地时应根据企业组织边界、运营边界、能源凭证、核算周期、地方政策和适用标准替换排放因子、数据采集方式与报表格式。
 
 完整设计与绘制说明见 [docs/design-and-drawing.md](docs/design-and-drawing.md)。
+
+<!-- readme-visual-refresh:artwork-source -->
+[Editable banner artwork · Excalidraw](assets/readme/banner.excalidraw)
+<!-- /readme-visual-refresh:artwork-source -->
